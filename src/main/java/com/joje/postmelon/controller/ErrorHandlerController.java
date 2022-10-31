@@ -22,9 +22,10 @@ public class ErrorHandlerController {
     public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
         log.error(e.getMessage());
         e.printStackTrace();
+        e.printStackTrace();
+        e.printStackTrace();
 
         ResultVo resultVo = new ResultVo(StatusType.SERVER_ERROR);
-
         return new ResponseEntity<>(resultVo, HTTP_HEADERS, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
