@@ -13,7 +13,7 @@ spring:
 logging:
   level:
     root: error
-    com.joje.postmelon: debug
+    com.joje.postmelon: info
 
 postmelon:
   uri:
