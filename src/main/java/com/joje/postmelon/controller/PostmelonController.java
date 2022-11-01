@@ -29,7 +29,8 @@ public class PostmelonController {
         if(id != null & id.length() > 0){
             SongDto song = postMelonService.getSongById(id);
             ResultVo resultVo = new ResultVo();
-            log.info("[song]=[{}]", song);
+            log.info("[title]=[{}]", song.getSongName());
+            log.debug("[song]=[{}]", song);
             resultVo.put("target", song);
             return new ResponseEntity<>(resultVo, HttpStatus.OK);
         }else {
