@@ -10,6 +10,7 @@ pipeline {
             }
         }
         stage('Build and test') {
+            agent any
 //             agent {
 //                 docker {
 //                     image 'gradle:6.6.1-jdk11-openj9'
