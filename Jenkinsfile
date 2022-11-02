@@ -2,6 +2,9 @@ pipeline {
     agent none
     tools { gradle 'default-gradle' }
     options { skipDefaultCheckout(true) }
+    environment {
+        container_name = 'pipeline-postmelon'
+    }
     stages {
         stage('Checkout repository') {
             agent any
