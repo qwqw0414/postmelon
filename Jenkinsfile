@@ -10,12 +10,12 @@ pipeline {
             }
         }
         stage('Build and test') {
-            agent {
+//             agent {
 //                 docker {
 //                     image 'gradle:6.6.1-jdk11-openj9'
 //                     args '-v /var/lib/jenkins/workspace/{container_name}/.m2:/root/.m2'
 //                 }
-            }
+//             }
             steps {
                 sh './gradlew clean build'
             }
