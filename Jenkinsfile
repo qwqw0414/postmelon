@@ -16,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'gradle clean build -x test'
+                sh './gradlew clean build -x test'
             }
         }
         stage('Docker build') {
