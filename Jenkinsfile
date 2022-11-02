@@ -1,6 +1,6 @@
 pipeline {
     agent none
-    tools { gradle 'gradle' }
+    tools { gradle 'default-gradle' }
     options { skipDefaultCheckout(true) }
     stages {
         stage('Checkout repository') {
