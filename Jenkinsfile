@@ -4,6 +4,7 @@ pipeline {
     options { skipDefaultCheckout(true) }
     environment {
         container_name = 'pipeline-postmelon'
+        use_profile = '${USE_PROFILE}'
     }
     stages {
         stage('Checkout repository') {
@@ -21,7 +22,7 @@ pipeline {
         stage('Docker build') {
             agent any
             steps {
-                sh 'docker build -t ${container_name}:latest .'
+                sh 'docker build -t ${container_name}:latest --build-arg USE_PROFILE=${use_profile} .'
             }
         }
         stage('Docker run') {
