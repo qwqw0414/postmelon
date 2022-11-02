@@ -25,13 +25,13 @@ public class PostmelonController {
     @GetMapping(value = "/search/{keyword}", produces = "application/json; charset=utf8")
     public ResponseEntity<?> search(@PathVariable("keyword") String keyword) throws Exception {
 
-        log.debug("[keyword]=[{}]", keyword);
+        log.info("[keyword]=[{}]", keyword);
         String id = postMelonService.getSongIdByKeyword(keyword);
 
         if(id != null && id.length() > 0){
             SongDto song = postMelonService.getSongById(id);
             ResultVo resultVo = new ResultVo();
-            log.info("[title]=[{}]", song.getSongName());
+            log.info("[title]=[{}], [artist]=[{}]", song.getSongName(), song.getArtist().getArtistId());
             log.debug("[song]=[{}]", song);
             resultVo.put("target", song);
             return new ResponseEntity<>(resultVo, HttpStatus.OK);
