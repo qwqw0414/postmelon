@@ -12,7 +12,7 @@ pipeline {
             agent {
                 docker {
                     image 'gradle:6.6.1-jdk11-openj9'
-                    args '-v /root/.m2:/root/.m2'
+                    args '-v ./.m2:/root/.m2'
                 }
             }
             steps {
