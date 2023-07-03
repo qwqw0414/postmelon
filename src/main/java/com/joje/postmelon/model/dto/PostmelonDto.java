@@ -1,24 +1,18 @@
-package com.joje.postmelon.model.entity;
+package com.joje.postmelon.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.time.LocalDate;
 
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Entity(name = "tb_postmelon")
-public class PostmelonEntity {
-
-    @Id
+public class PostmelonDto {
     private Long id;
-
     private String title;
     private String artist;
     private String lyrics;
@@ -26,5 +20,4 @@ public class PostmelonEntity {
     private String albumArt;
     private String genre;
     private String releaseDate;
-
 }

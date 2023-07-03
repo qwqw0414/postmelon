@@ -2,6 +2,7 @@ package com.joje.postmelon.service.impl;
 
 import com.joje.postmelon.component.HttpRequestComponent;
 import com.joje.postmelon.model.dto.ArtistDto;
+import com.joje.postmelon.model.dto.PostmelonDto;
 import com.joje.postmelon.model.dto.SongDto;
 import com.joje.postmelon.model.entity.PostmelonEntity;
 import com.joje.postmelon.repository.PostmelonRepository;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -69,30 +72,42 @@ public class PostMelonServiceImpl implements PostMelonService {
     }
 
     @Override
-    public SongDto getSongById(String songId) {
+    public PostmelonDto getSongById(String songId) {
 
         Document html = httpRequestComponent.requestHtml(DETAIL_URI + songId);
+        Elements elmts = html.select("div.entry dl.list dd");
 
-        ArtistDto artist = this.getArtistByMelon(html);
+        String album = elmts.eq(0).select("a").text();
+        String releaseDate = elmts.eq(1).text();
+        String genre = elmts.eq(2).text();
 
-        SongDto song = new SongDto(
-                songId,
-                this.getSongNameByMelon(html),
-                StringUtil.join(this.getLyricsToMelon(html), "\n"),
-                artist
-        );
-        return song;
+        String albumArt = html.select("div.section_info img").attr("src");
+
+        return PostmelonDto.builder()
+                .id(Long.parseLong(songId))
+                .title(this.getSongNameByMelon(html))
+                .artist(this.getArtistByMelon(html))
+                .album(album)
+                .genre(genre)
+                .albumArt(albumArt)
+                .lyrics(StringUtil.join(this.getLyricsToMelon(html), "\n"))
+                .releaseDate(releaseDate.replaceAll("\\.", "-"))
+                .build();
     }
 
     @Override
-    public boolean insertPostmelon(SongDto song) {
-        long count = postmelonRepository.countById(song.getSongId());
+    public boolean insertPostmelon(PostmelonDto postmelonDto) {
+        long count = postmelonRepository.countById(postmelonDto.getId());
         if(count == 0) {
             PostmelonEntity postmelonEntity = PostmelonEntity.builder()
-                    .id(song.getSongId())
-                    .title(song.getSongName())
-                    .artist(song.getArtist().getArtistName())
-                    .lyrics(song.getLyrics())
+                    .id(postmelonDto.getId())
+                    .title(postmelonDto.getTitle())
+                    .artist(postmelonDto.getArtist())
+                    .lyrics(postmelonDto.getLyrics())
+                    .album(postmelonDto.getAlbum())
+                    .albumArt(postmelonDto.getAlbumArt())
+                    .genre(postmelonDto.getGenre())
+                    .releaseDate(postmelonDto.getReleaseDate())
                     .build();
             postmelonRepository.save(postmelonEntity);
             return true;
@@ -116,6 +131,7 @@ public class PostMelonServiceImpl implements PostMelonService {
         return lyrics;
     }
 
+
     private String getSongNameByMelon(Document doc) {
         Element elmt = doc.selectFirst("div.song_name");
         String songTitle = "";
@@ -125,19 +141,8 @@ public class PostMelonServiceImpl implements PostMelonService {
         return songTitle;
     }
 
-    private ArtistDto getArtistByMelon(Document doc) {
+    private String getArtistByMelon(Document doc) {
         Element elmt = doc.selectFirst("div.artist");
-
-//		가수명 조회
-        String artistName = elmt.selectFirst("span").text().trim();
-
-//		가수 아이디 조회
-        String artistId = "";
-        String href = elmt.selectFirst("a").attr("href");
-        Matcher matcher = Pattern.compile("\\d+").matcher(href);
-        if(matcher.find()) {
-            artistId = matcher.group();
-        }
-        return new ArtistDto(artistId, artistName);
+        return elmt.selectFirst("span").text().trim();
     }
 }

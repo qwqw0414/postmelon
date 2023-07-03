@@ -1,6 +1,7 @@
 package com.joje.postmelon.controller;
 
 import com.joje.postmelon.exception.NotFoundDataException;
+import com.joje.postmelon.model.dto.PostmelonDto;
 import com.joje.postmelon.model.dto.SongDto;
 import com.joje.postmelon.model.vo.ResultVo;
 import com.joje.postmelon.service.PostMelonService;
@@ -30,14 +31,10 @@ public class PostmelonController {
         ResultVo resultVo = new ResultVo();
 
         if(id != null && id.length() > 0){
-            SongDto song = postMelonService.getSongById(id);
-
-//            log.info("[title]=[{}], [artist]=[{}]", song.getSongName(), song.getArtist().getArtistId());
-//            log.debug("[song]=[{}]", song);
-
-            boolean isInsert = postMelonService.insertPostmelon(song);
-
-            resultVo.put("target", song);
+            PostmelonDto postmelonDto = postMelonService.getSongById(id);
+            log.info("[title]=[{}], [artist]=[{}]", postmelonDto.getTitle(), postmelonDto.getArtist());
+            boolean isInsert = postMelonService.insertPostmelon(postmelonDto);
+            resultVo.put("target", postmelonDto);
             return new ResponseEntity<>(resultVo, HttpStatus.OK);
         }else {
             resultVo.setStatus(false);
