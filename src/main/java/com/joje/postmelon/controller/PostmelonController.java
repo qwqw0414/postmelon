@@ -27,16 +27,21 @@ public class PostmelonController {
 
         log.info("[keyword]=[{}]", keyword);
         String id = postMelonService.getSongIdByKeyword(keyword);
+        ResultVo resultVo = new ResultVo();
 
         if(id != null && id.length() > 0){
             SongDto song = postMelonService.getSongById(id);
-            ResultVo resultVo = new ResultVo();
-            log.info("[title]=[{}], [artist]=[{}]", song.getSongName(), song.getArtist().getArtistId());
-            log.debug("[song]=[{}]", song);
+
+//            log.info("[title]=[{}], [artist]=[{}]", song.getSongName(), song.getArtist().getArtistId());
+//            log.debug("[song]=[{}]", song);
+
+            boolean isInsert = postMelonService.insertPostmelon(song);
+
             resultVo.put("target", song);
             return new ResponseEntity<>(resultVo, HttpStatus.OK);
         }else {
-            throw new NotFoundDataException("Not Found Data : keyword=" + keyword);
+            resultVo.setStatus(false);
+            return new ResponseEntity<>(resultVo, HttpStatus.OK);
         }
     }
 

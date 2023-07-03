@@ -3,7 +3,10 @@ package com.joje.postmelon.service.impl;
 import com.joje.postmelon.component.HttpRequestComponent;
 import com.joje.postmelon.model.dto.ArtistDto;
 import com.joje.postmelon.model.dto.SongDto;
+import com.joje.postmelon.model.entity.PostmelonEntity;
+import com.joje.postmelon.repository.PostmelonRepository;
 import com.joje.postmelon.service.PostMelonService;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,11 +20,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service("PostMelonService")
 public class PostMelonServiceImpl implements PostMelonService {
 
     @Autowired
     private HttpRequestComponent httpRequestComponent;
+
+    @Autowired
+    private PostmelonRepository postmelonRepository;
 
     private final String SEARCH_URI;
     private final String DETAIL_URI;
@@ -75,6 +82,24 @@ public class PostMelonServiceImpl implements PostMelonService {
                 artist
         );
         return song;
+    }
+
+    @Override
+    public boolean insertPostmelon(SongDto song) {
+        long count = postmelonRepository.countById(song.getSongId());
+        if(count == 0) {
+            PostmelonEntity postmelonEntity = PostmelonEntity.builder()
+                    .id(song.getSongId())
+                    .title(song.getSongName())
+                    .artist(song.getArtist().getArtistName())
+                    .lyrics(song.getLyrics())
+                    .build();
+            postmelonRepository.save(postmelonEntity);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private List<String> getLyricsToMelon(Document doc) {

@@ -6,4 +6,6 @@ public interface PostMelonService {
     String getSongIdByKeyword(String keyword);
 
     SongDto getSongById(String songId);
+
+    boolean insertPostmelon(SongDto song);
 }
