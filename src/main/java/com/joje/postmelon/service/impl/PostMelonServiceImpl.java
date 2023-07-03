@@ -1,9 +1,7 @@
 package com.joje.postmelon.service.impl;
 
 import com.joje.postmelon.component.HttpRequestComponent;
-import com.joje.postmelon.model.dto.ArtistDto;
 import com.joje.postmelon.model.dto.PostmelonDto;
-import com.joje.postmelon.model.dto.SongDto;
 import com.joje.postmelon.model.entity.PostmelonEntity;
 import com.joje.postmelon.repository.PostmelonRepository;
 import com.joje.postmelon.service.PostMelonService;
@@ -16,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -90,6 +86,7 @@ public class PostMelonServiceImpl implements PostMelonService {
                 .album(album)
                 .genre(genre)
                 .albumArt(albumArt)
+                .detailUrl(DETAIL_URI + songId)
                 .lyrics(StringUtil.join(this.getLyricsToMelon(html), "\n"))
                 .releaseDate(releaseDate.replaceAll("\\.", "-"))
                 .build();
@@ -107,6 +104,7 @@ public class PostMelonServiceImpl implements PostMelonService {
                     .album(postmelonDto.getAlbum())
                     .albumArt(postmelonDto.getAlbumArt())
                     .genre(postmelonDto.getGenre())
+                    .detailUrl(postmelonDto.getDetailUrl())
                     .releaseDate(postmelonDto.getReleaseDate())
                     .build();
             postmelonRepository.save(postmelonEntity);

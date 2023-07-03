@@ -18,6 +18,7 @@ public class PostmelonDto {
     private String lyrics;
     private String album;
     private String albumArt;
+    private String detailUrl;
     private String genre;
     private String releaseDate;
 }
